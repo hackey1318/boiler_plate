@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 // salt를 이용해서 암호화
 const saltRounds =10;
 
@@ -48,7 +49,30 @@ userSchema.pre('save', function(next){
             })
         })
     }
+    else{
+        next()
+    }
 })
+
+userSchema.methods.comparePassword = function(plainPassword, cb){
+    //password, callback
+    bcrypt.compare(plainPassword, this.password, function(err, isMatch){
+        if(err) return cb(err);
+        cb(null, isMatch);
+    })
+}
+
+userSchema.methods.generateToken = function(cb){
+    //used jsonwebtoken -> make token
+    var user = this;
+    var token = jwt.sign(user._id.toHexString(), 'secretToken')
+    //user._id + 'SecretToken' = token
+    user.token = token
+    user.save(function(err, user){
+        if(err) return cb(err)
+        cb(null, user)
+    })
+}
 const User = mongoose.model('User', userSchema)
 
 module.exports={User}
