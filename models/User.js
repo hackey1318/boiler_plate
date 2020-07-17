@@ -53,7 +53,6 @@ userSchema.pre('save', function(next){
         next()
     }
 })
-
 userSchema.methods.comparePassword = function(plainPassword, cb){
     //password, callback
     bcrypt.compare(plainPassword, this.password, function(err, isMatch){
@@ -73,6 +72,7 @@ userSchema.methods.generateToken = function(cb){
         cb(null, user)
     })
 }
+
 const User = mongoose.model('User', userSchema)
 
 module.exports={User}
