@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const express = require('express')
 const app = express()
 const port = 5000
@@ -6,6 +5,7 @@ const config = require("./config/key")
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const {User} = require("./models/User")
+const {auth}=require("./middleware/auth")
 
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true}))
@@ -18,9 +18,9 @@ mongoose.connect(config.mongoURL,{
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(()=>console.log('MongoDB connected...'))
   .catch(err=>console.log(err))
-
+// Express Router -> /api/user/login, /api/product/create, /api/comment
 app.get('/', (req, res) => res.send('Hello World!!Yes_Node.js world!!'))
-app.post('/register', (req, res) => {
+app.post('/api/users/register', (req, res) => {
     // register information -> get client
     // into mongo database
     const user = new User(req.body)
@@ -31,7 +31,7 @@ app.post('/register', (req, res) => {
         })
     })
 })
-app.post('/login', (req,res)=>{
+app.post('/api/users/login', (req,res)=>{
     // find Email in DataBase
     User.findOne({email:req.body.email}, (err,user)=>{
         if(!user){
@@ -64,38 +64,20 @@ app.post('/login', (req,res)=>{
         })
     })
 })
-
-=======
-const express = require('express')
-const app = express()
-const port = 5000
-const config = require("./config/key")
-const bodyParser = require('body-parser')
-const {User} = require("./models/User")
-
-// application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: true}))
-// application/json
-app.use(bodyParser.json())
-
-const mongoose = require('mongoose')
-mongoose.connect(config.mongoURL,{
-    useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
-}).then(()=>console.log('MongoDB connected...'))
-  .catch(err=>console.log(err))
-
-app.get('/', (req, res) => res.send('Hello World!!Yes_Node.js world!!'))
-app.post('/register', (req, res) => {
-    // register information -> get client
-    // into database
-    const user = new User(req.body)
-    user.save((err, userInfo) => {
-        if(err) return res.json({success: false, err})
-        return res.status(200).json({
-            success: true
-        })
+//auth midware
+app.get('/api/users/auth', auth ,(req, res)=>{
+    // middleware Complete -> Authentication (True)
+    res.status(200).json({
+        _id: req.user._id,
+        // role 0 : guest
+        // role !0 : admin
+        isAdmin: req.user.role === 0 ? false : true,    //chage role num
+        isAuth: true,
+        email: req.user.email,
+        name: req.user.name,
+        lastname: req.user.lastname,
+        role: req.user.role,
+        image: req.user.image
     })
 })
-
->>>>>>> 8508196934b54792bc81f86e0a3846dbd3a4a49a
 app.listen(port, () => console.log(`Example app listening at ${port}`))
