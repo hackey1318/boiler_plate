@@ -13,10 +13,10 @@ app.use(bodyParser.json())
 const mongoose = require('mongoose')
 mongoose.connect(config.mongoURL,{
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
-}).then(()=>console.log('MongoDB Connected...')).catch(err=>console.log(err))
+}).then(()=>console.log('MongoDB connected...'))
+  .catch(err=>console.log(err))
 
-app.get('/', (req, res) => res.send('Hello World_node.js!!'))
-
+app.get('/', (req, res) => res.send('Hello World!!Yes_Node.js world!!'))
 app.post('/register', (req, res) => {
     // register information -> get client
     // into database
@@ -28,6 +28,5 @@ app.post('/register', (req, res) => {
         })
     })
 })
-
 
 app.listen(port, () => console.log(`Example app listening at ${port}`))
