@@ -11,7 +11,7 @@ const {auth}=require("./middleware/auth")
 app.use(bodyParser.urlencoded({extended: true}))
 // application/json
 app.use(bodyParser.json())
-app.use(cookieParser())
+app.use(cookieParser)
 
 const mongoose = require('mongoose')
 mongoose.connect(config.mongoURL,{
