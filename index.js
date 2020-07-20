@@ -54,7 +54,9 @@ app.post('/api/users/login', (req,res)=>{
                 // save Token
                 // where -> Cookie, Local Storage, Session...
                 // choose Cookie
-                res.cookie("x_AUTH", user.token)
+                res.cookie("x_auth", user.token,{
+                    httpOnly: true
+                })
                 .status(200)
                 .json({
                     loginSuccess: true,
@@ -78,6 +80,17 @@ app.get('/api/users/auth', auth ,(req, res)=>{
         lastname: req.user.lastname,
         role: req.user.role,
         image: req.user.image
+    })
+})
+
+app.get('/api/users/logout',auth,(req,res)=>{
+    User.findOneAndUpdate({_id: req.user._id},
+        {token: ""},
+        (err, user)=>{
+        if(err) return res.json({success: false, err})
+        return res.status(200).send({
+            success: true
+        })
     })
 })
 app.listen(port, () => console.log(`Example app listening at ${port}`))
