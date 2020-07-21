@@ -20,6 +20,7 @@ mongoose.connect(config.mongoURL,{
   .catch(err=>console.log(err))
 // Express Router -> /api/user/login, /api/product/create, /api/comment
 app.get('/', (req, res) => res.send('Hello World!!Yes_Node.js world!!'))
+app.get('/api/hello',(req,res) => res.send("Hello world!!"))
 app.post('/api/users/register', (req, res) => {
     // register information -> get client
     // into mongo database
